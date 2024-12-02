@@ -2,12 +2,19 @@ package backtracking;
 import estructura.Encreuades;
 import estructura.PosicioInicial;
 
+import java.util.ArrayList;
+
 public class SolucioBacktracking {
 
 	/* TODO
 	 * cal definir els atributs necessaris
 	 */
+	private int valorParaula;
+	private int valorTotalParaules;
 	private final Encreuades repte;
+	private Encreuades repteProvisional;
+	private Encreuades repteMillor;
+	private ArrayList indexMarcat = new ArrayList();
 
 	
 	public SolucioBacktracking(Encreuades repte) {
@@ -15,7 +22,8 @@ public class SolucioBacktracking {
 	}
 
 	public char[][] getMillorSolucio() {
-		return null; //TODO
+		 //TODO
+		return repteMillor.getPuzzle();
 	}
 
 	public Runnable start(boolean optim)
@@ -23,6 +31,9 @@ public class SolucioBacktracking {
 		/* TODO
 		 * cal inicialitzar els atributs necessaris
 		 */
+			valorParaula = 0;
+			valorTotalParaules = 0;
+
 
 		if(!optim) {
 			if (!this.backUnaSolucio(0))
@@ -67,11 +78,34 @@ public class SolucioBacktracking {
 	}
 	
 	private boolean acceptable(int indexUbicacio, int indexItem) {
-		return false; //TODO
+		 //TODO
+		if(repte.getEspaisDisponibles().get(indexUbicacio).getLength() == repte.getItem(indexItem).length){
+			return true;
+		}
+		return false;
 	}
 	
-	private void anotarASolucio(int indexUbicacio, int indexItem) {
+	private void anotarASolucio(int indexUbicacio, int indexItem) {//me ha dado una embolia cerebral pensando en esto, aqui va la explicación no fiable
 		//TODO
+		//tenemos que anotar una solucion, para ello, tenemos que crear un objeto Encreuades y reemplazarlo por el anterior, esto lo hago porque no tenemos setters, tenemos que reemplazar el objeto entero
+		char [][] newPuzzle = repte.getPuzzle(); // duplicamos este puzle, ya que vamos a crear otro objeto encreuades y tenemos que crear los objetos que pasaremos por parametros en el constructor
+		ArrayList espaiDisponible = (ArrayList) repte.getEspaisDisponibles(); // que nos den los espacios disponibles, realmente esto era para poder raelizar un casteo para que me dejara poner el metodo .get() sobre esta lista, y de esta manera poder acceder a la posicionInicial disponible
+		PosicioInicial aux = (PosicioInicial) espaiDisponible.get(indexUbicacio); // guardo esa posicion inicial en un auxiliar para poder acceder a sus getters
+
+
+				for(int i = 0; i < repte.getItem(indexItem).length ; i++){ //tenemos que apuntar caracter a caracter en el array 2D puzzle en las posiciones correspondientes
+					if(aux.getDireccio() == 'h'){
+						newPuzzle [aux.getInitCol()+i][aux.getInitRow()] = repte.getItem(indexItem)[i];
+					}
+					newPuzzle [aux.getInitCol()][aux.getInitRow()+i] = repte.getItem(indexItem)[i];
+				}
+				//eliminamos el item del array = tenemos que copiar este array en otro y añadirle todo el contenido que tiene excepto el que hemos anotado, podemos tambien añadir el indice de este en la lista de  indexMarcat, de esta forma, antes de añadir un resultado, tenemos que ver si el indice de este se encuentra o no en la lista, si se encuentra, no lo podemos anotar, si no se encuentra, lo anotamos.
+				//de hecho, yo marcaría, por algo tenemos ese atributo...
+		indexMarcat.add(indexItem);//<--marcamos
+		//añadimos?? no se man, he hecho un atributo provisional, antes de meterlo a repte
+		//faak, los items son privados rip
+		repteProvisional = new Encreuades(newPuzzle,new char[][] {item});
+
 	}
 	
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
