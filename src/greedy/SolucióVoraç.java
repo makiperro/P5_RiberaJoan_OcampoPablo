@@ -23,15 +23,15 @@ public class SolucióVoraç {
         char[][] copiaPuzzle = clonarPuzzle(repte.getPuzzle());
         List<PosicioInicial> espais = repte.getEspaisDisponibles();
 
-        char[][] paraules = getItems(); // Work directly with the 2D char array
-        boolean[] paraulesUsades = new boolean[paraules.length]; // Use the length of the 2D array
+        char[][] paraules = getItems();
+        boolean[] paraulesUsades = new boolean[paraules.length];
 
         for (PosicioInicial espai : espais) {
             char[] millorOpcio = null;
             int millorPuntuacio = -1;
             int indexMillorParaula = -1;
 
-            for (int i = 0; i < paraules.length; i++) { // Iterate through the 2D array
+            for (int i = 0; i < paraules.length; i++) {
                 if (paraulesUsades[i]) continue;
 
                 char[] paraula = paraules[i];
@@ -99,14 +99,14 @@ public class SolucióVoraç {
     }
 
     private char[][] getItems(){
-        int rows = repte.getItemsSize(); // Number of rows in the array
-        char[][] itemsCopy = new char[rows][]; // Create a 2D array with the same number of rows
+        int rows = repte.getItemsSize();
+        char[][] itemsCopy = new char[rows][];
 
-        // Copy each row from the original array using getItem().
+
         for (int i = 0; i < rows; i++) {
-            char[] row = repte.getItem(i); // Get the original row
-            itemsCopy[i] = new char[row.length]; // Create a new row of the same length
-            System.arraycopy(row, 0, itemsCopy[i], 0, row.length); // Copy the row into the new array
+            char[] row = repte.getItem(i);
+            itemsCopy[i] = new char[row.length];
+            System.arraycopy(row, 0, itemsCopy[i], 0, row.length); 
         }
         return itemsCopy;
     }
