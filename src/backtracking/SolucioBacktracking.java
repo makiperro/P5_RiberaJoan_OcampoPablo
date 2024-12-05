@@ -104,7 +104,7 @@ public class SolucioBacktracking {
 		indexMarcat.add(indexItem);//<--marcamos
 		//añadimos?? no se man, he hecho un atributo provisional, antes de meterlo a repte
 		//faak, los items son privados rip
-		//repteProvisional = new Encreuades(newPuzzle,new char[][] {item});
+		repteProvisional = new Encreuades(newPuzzle,getItems());
 
 	}
 	
@@ -129,6 +129,19 @@ public class SolucioBacktracking {
 		String resultat = "";
 		//TODO
 		return resultat;
+	}
+
+	private char[][] getItems(){
+		int rows = repte.getItemsSize(); 
+		char[][] itemsCopy = new char[rows][]; // Create a 2D array with the same number of rows
+
+		// Copy each row from the original array using getItem().
+		for (int i = 0; i < rows; i++) {
+			char[] row = repte.getItem(i); // Get the original row
+			itemsCopy[i] = new char[row.length]; // Create a new row of the same length
+			System.arraycopy(row, 0, itemsCopy[i], 0, row.length); // Copy the row into the new array
+		}
+		return itemsCopy;
 	}
 
 }

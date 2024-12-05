@@ -3,6 +3,7 @@ package greedy;
 import estructura.Encreuades;
 import estructura.PosicioInicial;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SolucióVoraç {
@@ -21,18 +22,19 @@ public class SolucióVoraç {
     private char[][] greedy() {
         char[][] copiaPuzzle = clonarPuzzle(repte.getPuzzle());
         List<PosicioInicial> espais = repte.getEspaisDisponibles();
-        List<char[]> paraules = repte.getItem();
-        boolean[] paraulesUsades = new boolean[paraules.size()];
+
+        char[][] paraules = getItems(); // Work directly with the 2D char array
+        boolean[] paraulesUsades = new boolean[paraules.length]; // Use the length of the 2D array
 
         for (PosicioInicial espai : espais) {
             char[] millorOpcio = null;
             int millorPuntuacio = -1;
             int indexMillorParaula = -1;
 
-            for (int i = 0; i < paraules.size(); i++) {
+            for (int i = 0; i < paraules.length; i++) { // Iterate through the 2D array
                 if (paraulesUsades[i]) continue;
 
-                char[] paraula = paraules.get(i);
+                char[] paraula = paraules[i];
                 if (paraula.length == espai.getLength() && esPotColocar(copiaPuzzle, espai, paraula)) {
                     int puntuacioParaula = calcularPuntuacio(paraula);
                     if (puntuacioParaula > millorPuntuacio) {
@@ -95,4 +97,18 @@ public class SolucióVoraç {
         }
         return copia;
     }
+
+    private char[][] getItems(){
+        int rows = repte.getItemsSize(); // Number of rows in the array
+        char[][] itemsCopy = new char[rows][]; // Create a 2D array with the same number of rows
+
+        // Copy each row from the original array using getItem().
+        for (int i = 0; i < rows; i++) {
+            char[] row = repte.getItem(i); // Get the original row
+            itemsCopy[i] = new char[row.length]; // Create a new row of the same length
+            System.arraycopy(row, 0, itemsCopy[i], 0, row.length); // Copy the row into the new array
+        }
+        return itemsCopy;
+    }
+
 }
