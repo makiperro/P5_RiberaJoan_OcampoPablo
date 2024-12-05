@@ -5,23 +5,23 @@ import estructura.PosicioInicial;
 
 import java.util.List;
 
-public class SolucioVorac {
-    private final Encreuades crucigrama;
+public class SolucióVoraç {
+    private final Encreuades repte;
     private final char[][] solucio;
 
-    public SolucioVorac(Encreuades crucigrama) {
-        this.crucigrama = crucigrama;
-        this.solucio = generarSolucio();
+    public SolucióVoraç(Encreuades repte) {
+        this.repte = repte;
+        this.solucio = greedy();
     }
 
-    public char[][] obtenirSolucio() {
+    public char[][] getSolucio() {
         return solucio;
     }
 
-    private char[][] generarSolucio() {
-        char[][] copiaPuzzle = clonarPuzzle(crucigrama.getPuzzle());
-        List<PosicioInicial> espais = crucigrama.getEspaisDisponibles();
-        List<char[]> paraules = crucigrama.getItem();
+    private char[][] greedy() {
+        char[][] copiaPuzzle = clonarPuzzle(repte.getPuzzle());
+        List<PosicioInicial> espais = repte.getEspaisDisponibles();
+        List<char[]> paraules = repte.getItem();
         boolean[] paraulesUsades = new boolean[paraules.size()];
 
         for (PosicioInicial espai : espais) {
