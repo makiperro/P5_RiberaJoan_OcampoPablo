@@ -27,8 +27,13 @@ public class Encreuades {
 		return other;
 	}
 
-	public int getItemsSize(){ return this.items.length;}
-	public char[] getItem(int index){ return this.items[index];}
+	public int getItemsSize(){
+		return this.items.length;
+	}
+
+	public char[] getItem(int index){
+		return this.items[index];
+	}
 
 	public List<PosicioInicial> getEspaisDisponibles() { return this.espaisDisponibles;}
 

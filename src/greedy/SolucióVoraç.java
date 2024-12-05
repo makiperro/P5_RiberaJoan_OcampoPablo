@@ -5,79 +5,94 @@ import estructura.PosicioInicial;
 
 import java.util.List;
 
-public class SolucióVoraç {
-    /* TODO
-     * cal definir els atributs necessaris
-     */
-    private final Encreuades repte;
-    private char[][] solucio;
+public class SolucioVorac {
+    private final Encreuades crucigrama;
+    private final char[][] solucio;
 
-    public SolucióVoraç(Encreuades repte) {
-        /* TODO
-         * cal inicialitzar els atributs necessaris
-         * i invocar al mètode greedy
-         */
-        this.repte = repte;
-
+    public SolucioVorac(Encreuades crucigrama) {
+        this.crucigrama = crucigrama;
+        this.solucio = generarSolucio();
     }
 
-    public char[][] getSolucio() {
-        return null; // TODO
+    public char[][] obtenirSolucio() {
+        return solucio;
     }
 
+    private char[][] generarSolucio() {
+        char[][] copiaPuzzle = clonarPuzzle(crucigrama.getPuzzle());
+        List<PosicioInicial> espais = crucigrama.getEspaisDisponibles();
+        List<char[]> paraules = crucigrama.getItem();
+        boolean[] paraulesUsades = new boolean[paraules.size()];
 
-    // mireu l'esquema utilitzat per la professora Lina
-    // si voleu podeu modificar la capçalera d'aquest mètode
-    // si voleu podeu utilitzar recursivitat
-    //TODO
-    private char[][] greedy() {
-        char[][] encreuat = repte.getPuzzle();
-        List<PosicioInicial> disponibilitat = repte.getEspaisDisponibles();
-        for (PosicioInicial espai : repte.getEspaisDisponibles()) {
-            for (int i = 0; i < repte.getItemsSize(); i++) {
-                char[] item = repte.getItem(i);
-                if (item.length == espai.getLength() && posarParaula(encreuat, espai, item)) {
-                    insertItem(encreuat, espai, item);
+        for (PosicioInicial espai : espais) {
+            char[] millorOpcio = null;
+            int millorPuntuacio = -1;
+            int indexMillorParaula = -1;
+
+            for (int i = 0; i < paraules.size(); i++) {
+                if (paraulesUsades[i]) continue;
+
+                char[] paraula = paraules.get(i);
+                if (paraula.length == espai.getLength() && esPotColocar(copiaPuzzle, espai, paraula)) {
+                    int puntuacioParaula = calcularPuntuacio(paraula);
+                    if (puntuacioParaula > millorPuntuacio) {
+                        millorOpcio = paraula;
+                        millorPuntuacio = puntuacioParaula;
+                        indexMillorParaula = i;
+                    }
                 }
             }
-        }
-        return encreuat;
-    }
 
-
-
-    /* A aquesta classe
-     * podeu definir els mètodes privats que vulgueu
-     */
-
-    private boolean posarParaula(char[][] encreuat, PosicioInicial inicial, char[] paraula) {
-        int fila = inicial.getInitRow();
-        int columna = inicial.getInitCol();
-        int dFila = inicial.getDireccio() == 'V' ? 1 : 0;
-        int dColumna = inicial.getDireccio() == 'H' ? 1 : 0;
-
-        for (int i = 0; i < paraula.length; i++) {
-            char actual = encreuat[fila + i * dFila][columna + i * dColumna];
-            if (actual != ' ' && actual != paraula[i]) {
-                return false;
+            if (millorOpcio != null) {
+                insertarParaula(copiaPuzzle, espai, millorOpcio);
+                paraulesUsades[indexMillorParaula] = true;
             }
         }
+
+        return copiaPuzzle;
+    }
+
+    private boolean esPotColocar(char[][] puzzle, PosicioInicial espai, char[] paraula) {
+        int fila = espai.getInitRow();
+        int columna = espai.getInitCol();
+        boolean esHoritzontal = espai.getDireccio() == 'H';
+
         for (int i = 0; i < paraula.length; i++) {
-            encreuat[fila + i * dFila][columna + i * dColumna] = paraula[i];
+            char existent = esHoritzontal ? puzzle[fila][columna + i] : puzzle[fila + i][columna];
+            if (existent != ' ' && existent != paraula[i]) {
+                return false;
+            }
         }
         return true;
     }
 
+    private void insertarParaula(char[][] puzzle, PosicioInicial espai, char[] paraula) {
+        int fila = espai.getInitRow();
+        int columna = espai.getInitCol();
+        boolean esHoritzontal = espai.getDireccio() == 'H';
 
-    private void insertItem (char[][] puzzle, PosicioInicial espai, char[] item) {
-        int row = espai.getInitRow();
-        int col = espai.getInitCol();
-        int dRow = espai.getDireccio() == 'V' ? 1 : 0;
-        int dCol = espai.getDireccio() == 'H' ? 1 : 0;
-
-        for (int i = 0; i < item.length; i++) {
-            puzzle[row + i * dRow][col + i * dCol] = item[i];
+        for (int i = 0; i < paraula.length; i++) {
+            if (esHoritzontal) {
+                puzzle[fila][columna + i] = paraula[i];
+            } else {
+                puzzle[fila + i][columna] = paraula[i];
+            }
         }
     }
 
+    private int calcularPuntuacio(char[] paraula) {
+        int puntuacio = 0;
+        for (char lletra : paraula) {
+            puntuacio += lletra;
+        }
+        return puntuacio;
+    }
+
+    private char[][] clonarPuzzle(char[][] original) {
+        char[][] copia = new char[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            copia[i] = original[i].clone();
+        }
+        return copia;
+    }
 }

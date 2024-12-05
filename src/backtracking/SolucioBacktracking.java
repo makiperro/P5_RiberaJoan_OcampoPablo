@@ -104,7 +104,7 @@ public class SolucioBacktracking {
 		indexMarcat.add(indexItem);//<--marcamos
 		//añadimos?? no se man, he hecho un atributo provisional, antes de meterlo a repte
 		//faak, los items son privados rip
-		repteProvisional = new Encreuades(newPuzzle,new char[][] {item});
+		//repteProvisional = new Encreuades(newPuzzle,new char[][] {item});
 
 	}
 	
