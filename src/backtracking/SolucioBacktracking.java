@@ -80,22 +80,30 @@ public class SolucioBacktracking {
      * cal guardar una COPIA de la millor solució a una variable
      */
     private void backMillorSolucio(int indexUbicacio) {
-       int valor = calcularFuncioObjectiu(solucioProvisional.getPuzzle());
+        // Iteramos sobre todos los posibles elementos a colocar en la ubicación actual
+        for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
+            // Verificamos si el elemento es aceptable para la ubicación actual
+            if (acceptable(indexUbicacio, indexItem)) {
+                // Anotamos la palabra en la solución provisional
+                anotarASolucio(indexUbicacio, indexItem);
 
-        for(int i = 0; i < this.calendari.length; ++i) {
-            for(int j = 0; j < this.calendari[i].length; ++j) {
-                if (this.acceptable(i,j)) {
-                    int nAfectatsTmp = this.anotarValor(profunditat, i, j);
-                    if (profunditat == this.ass.length - 1) {
-                        if (this.nAfectats < this.nAfectatsMillor) {
-                            this.guardarResultat();
-                        }
-                    } else if (this.nAfectats < this.nAfectatsMillor) {
-                        this.backMillorSolucio(profunditat + 1);
+                // Comprobamos si ya hemos encontrado una solución (sin espacios disponibles)
+                if (esSolucio(indexUbicacio)) {
+                    // Calculamos el valor de la solución actual
+                    int valor = calcularFuncioObjectiu(this.solucioProvisional.getPuzzle());
+
+                    // Si la solución actual tiene un valor mejor que el mejor encontrado hasta ahora, lo actualizamos
+                    if (valor > this.valorTotalParaules) {
+                        this.valorTotalParaules = valor;
+                        guardarMillorSolucio();
                     }
-
-                    this.desanotarValor(i, j, nAfectatsTmp);
+                } else {
+                    // Si no es una solución completa, seguimos buscando en la siguiente ubicación
+                    backMillorSolucio(indexUbicacio + 1);
                 }
+
+                // Desmarcamos la palabra de la solución provisional para intentar otras configuraciones
+                desanotarDeSolucio(indexUbicacio, indexItem);
             }
         }
     }
