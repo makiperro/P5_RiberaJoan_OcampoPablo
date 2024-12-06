@@ -23,7 +23,7 @@ public class SolucióVoraç {
         char[][] copiaPuzzle = clonarPuzzle(repte.getPuzzle());
         List<PosicioInicial> espais = repte.getEspaisDisponibles();
 
-        char[][] paraules = getItems();
+        char[][] paraules = getItems(this.repte);
         boolean[] paraulesUsades = new boolean[paraules.length];
 
         for (PosicioInicial espai : espais) {
@@ -98,7 +98,7 @@ public class SolucióVoraç {
         return copia;
     }
 
-    private char[][] getItems(){
+    public static char[][] getItems(Encreuades repte){
         int rows = repte.getItemsSize();
         char[][] itemsCopy = new char[rows][];
 
