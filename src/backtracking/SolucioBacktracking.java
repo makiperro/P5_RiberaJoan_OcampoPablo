@@ -80,11 +80,11 @@ public class SolucioBacktracking {
      * cal guardar una COPIA de la millor solució a una variable
      */
     private void backMillorSolucio(int indexUbicacio) {
-        int nAfectatsTmp = false;
+       int valor = calcularFuncioObjectiu(solucioProvisional.getPuzzle());
 
         for(int i = 0; i < this.calendari.length; ++i) {
             for(int j = 0; j < this.calendari[i].length; ++j) {
-                if (this.valorAcceptable(profunditat, i, j)) {
+                if (this.acceptable(i,j)) {
                     int nAfectatsTmp = this.anotarValor(profunditat, i, j);
                     if (profunditat == this.ass.length - 1) {
                         if (this.nAfectats < this.nAfectatsMillor) {
