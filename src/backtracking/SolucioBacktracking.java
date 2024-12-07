@@ -163,12 +163,12 @@ public class SolucioBacktracking {
                 if (aux.getInitCol() == j && aux.getInitRow() == i) {
 
                     for (int k = 0; k < repte.getItem(indexItem).length; k++) {
-                        if (aux.getDireccio() == 'h') {
+                        if (aux.getDireccio() == 'H') {
                             if(newPuzzle[i][j + k] == itemToBeRemoved[k]) {
                                 newPuzzle[i][j + k] = ' ';
                             }
                         }
-                        if(newPuzzle[i+k][j] == itemToBeRemoved[k]) {
+                        else if(newPuzzle[i+k][j] == itemToBeRemoved[k]) {
                             newPuzzle[i + k][j] = ' ';
                         }
                     }
