@@ -34,10 +34,10 @@ public class SolucioBacktracking {
          */
         valorParaula = 0;
         valorTotalParaules = 0;
-		indexMarcat = new boolean[repte.getItemsSize()];
-		for (int i = 0; i < repte.getItemsSize(); i++) {
-			indexMarcat[i] = false;
-		}
+        indexMarcat = new boolean[repte.getItemsSize()];
+        for (int i = 0; i < repte.getItemsSize(); i++) {
+            indexMarcat[i] = false;
+        }
 
 
         if (!optim) {
@@ -110,9 +110,14 @@ public class SolucioBacktracking {
 
     private boolean acceptable(int indexUbicacio, int indexItem) {
         //TODO
-        if (repte.getEspaisDisponibles().get(indexUbicacio).getLength() == repte.getItem(indexItem).length) {
-            return true;
-        }
+
+       try {
+           if (repte.getEspaisDisponibles().get(indexUbicacio).getLength() == repte.getItem(indexItem).length) {
+               return true;
+           }
+       }catch(IndexOutOfBoundsException e) {
+           return false;
+       }
         return false;
     }
 
@@ -121,22 +126,29 @@ public class SolucioBacktracking {
         ArrayList espaiDisponible = (ArrayList) repte.getEspaisDisponibles(); // que nos den los espacios disponibles, realmente esto era para poder raelizar un casteo para que me dejara poner el metodo .get() sobre esta lista, y de esta manera poder acceder a la posicionInicial disponible
         PosicioInicial aux = (PosicioInicial) espaiDisponible.get(indexUbicacio); // guardo esa posicion inicial en un auxiliar para poder acceder a sus getters
 
-		if(!indexMarcat[indexItem]) {
+        if(!indexMarcat[indexItem]) {
 
 
-        for (int i = 0; i < repte.getItem(indexItem).length; i++) { //tenemos que apuntar caracter a caracter en el array 2D puzzle en las posiciones correspondientes
-            if (aux.getDireccio() == 'h') {
-                newPuzzle[aux.getInitCol() + i][aux.getInitRow()] = repte.getItem(indexItem)[i];
+            for (int i = 0; i < repte.getItem(indexItem).length; i++) { // Iterates over the item length
+                if (aux.getDireccio() == 'H') { // Horizontal placement
+                    if (aux.getInitCol() + i >= newPuzzle[0].length) { // Boundary check for columns
+                        throw new IndexOutOfBoundsException("Horizontal placement exceeds puzzle bounds");
+                    }
+                    newPuzzle[aux.getInitRow()][aux.getInitCol() + i] = repte.getItem(indexItem)[i];
+                } else if (aux.getDireccio() == 'V') { // Vertical placement
+                    if (aux.getInitRow() + i >= newPuzzle.length) { // Boundary check for rows
+                        throw new IndexOutOfBoundsException("Vertical placement exceeds puzzle bounds");
+                    }
+                    newPuzzle[aux.getInitRow() + i][aux.getInitCol()] = repte.getItem(indexItem)[i];
+                }
             }
-            newPuzzle[aux.getInitCol()][aux.getInitRow() + i] = repte.getItem(indexItem)[i];
+            //eliminamos el item del array = tenemos que copiar este array en otro y añadirle todo el contenido que tiene excepto el que hemos anotado, podemos tambien añadir el indice de este en la lista de  indexMarcat, de esta forma, antes de añadir un resultado, tenemos que ver si el indice de este se encuentra o no en la lista, si se encuentra, no lo podemos anotar, si no se encuentra, lo anotamos.
+            //de hecho, yo marcaría, por algo tenemos ese atributo...
+            indexMarcat[indexItem]=true;//<--marcamos REVISAR MAS TARDE
+            //añadimos?? no se man, he hecho un atributo provisional, antes de meterlo a repte
+            //faak, los items son privados rip
+            solucioProvisional = new Encreuades(newPuzzle, SolucióVoraç.getItems(repte));
         }
-        //eliminamos el item del array = tenemos que copiar este array en otro y añadirle todo el contenido que tiene excepto el que hemos anotado, podemos tambien añadir el indice de este en la lista de  indexMarcat, de esta forma, antes de añadir un resultado, tenemos que ver si el indice de este se encuentra o no en la lista, si se encuentra, no lo podemos anotar, si no se encuentra, lo anotamos.
-        //de hecho, yo marcaría, por algo tenemos ese atributo...
-        indexMarcat[indexItem]=true;//<--marcamos REVISAR MAS TARDE
-        //añadimos?? no se man, he hecho un atributo provisional, antes de meterlo a repte
-        //faak, los items son privados rip
-        solucioProvisional = new Encreuades(newPuzzle, SolucióVoraç.getItems(repte));
-		}
 
     }
 
@@ -144,7 +156,7 @@ public class SolucioBacktracking {
         //TODO
         ArrayList espaiDisponible = (ArrayList) repte.getEspaisDisponibles();
         PosicioInicial aux = (PosicioInicial) espaiDisponible.get(indexUbicacio);
-		char [] itemToBeRemoved = repte.getItem(indexItem);
+        char [] itemToBeRemoved = repte.getItem(indexItem);
         char[][] newPuzzle = solucioProvisional.getPuzzle();
         for (int i = 0; i < newPuzzle.length; i++) {
             for (int j = 0; j < newPuzzle[i].length; j++) {
@@ -152,37 +164,37 @@ public class SolucioBacktracking {
 
                     for (int k = 0; k < repte.getItem(indexItem).length; k++) {
                         if (aux.getDireccio() == 'h') {
-							if(newPuzzle[i][j + k] == itemToBeRemoved[k]) {
-								newPuzzle[i][j + k] = ' ';
-							}
+                            if(newPuzzle[i][j + k] == itemToBeRemoved[k]) {
+                                newPuzzle[i][j + k] = ' ';
+                            }
                         }
-						if(newPuzzle[i+k][j] == itemToBeRemoved[k]) {
-							newPuzzle[i + k][j] = ' ';
-						}
+                        if(newPuzzle[i+k][j] == itemToBeRemoved[k]) {
+                            newPuzzle[i + k][j] = ' ';
+                        }
                     }
                 }
             }
         }
-		solucioProvisional = new Encreuades( newPuzzle, SolucióVoraç.getItems(repte));
+        solucioProvisional = new Encreuades( newPuzzle, SolucióVoraç.getItems(repte));
     }
 
 
     private boolean esSolucio(int index) {
-         //TODO
+        //TODO
 
-		if(solucioProvisional.getEspaisDisponibles() == null ||solucioProvisional.getEspaisDisponibles().size() == 0)
-			return true;
-		return false;
+        if(solucioProvisional.getEspaisDisponibles() == null ||solucioProvisional.getEspaisDisponibles().size() == 0)
+            return true;
+        return false;
     }
 
     private int calcularFuncioObjectiu(char[][] matriu) {
-		int valor=0;
+        int valor=0;
         for( int i = 0; i < matriu.length; i++) {
-			for( int j = 0; j < matriu[i].length; j++) {
-				valor += matriu[i][j];
-			}
-		}
-		return valor;
+            for( int j = 0; j < matriu[i].length; j++) {
+                valor += matriu[i][j];
+            }
+        }
+        return valor;
     }
 
     private void guardarMillorSolucio() {
