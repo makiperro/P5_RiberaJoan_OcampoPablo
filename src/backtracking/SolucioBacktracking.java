@@ -199,7 +199,8 @@ public class SolucioBacktracking {
 
     private void guardarMillorSolucio() {
         // TODO - cal guardar un clone
-
+        solucioMillor = solucioProvisional;
+        valorTotalParaules = calcularFuncioObjectiu(solucioProvisional.getPuzzle());
     }
 
     public String toString() {
