@@ -110,14 +110,9 @@ public class SolucioBacktracking {
 
     private boolean acceptable(int indexUbicacio, int indexItem) {
         //TODO
-
-       try {
-           if (repte.getEspaisDisponibles().get(indexUbicacio).getLength() == repte.getItem(indexItem).length) {
-               return true;
-           }
-       }catch(IndexOutOfBoundsException e) {
-           return false;
-       }
+        if (repte.getEspaisDisponibles().get(indexUbicacio).getLength() == repte.getItem(indexItem).length) {
+            return true;
+        }
         return false;
     }
 
@@ -129,18 +124,11 @@ public class SolucioBacktracking {
         if(!indexMarcat[indexItem]) {
 
 
-            for (int i = 0; i < repte.getItem(indexItem).length; i++) { // Iterates over the item length
-                if (aux.getDireccio() == 'H') { // Horizontal placement
-                    if (aux.getInitCol() + i >= newPuzzle[0].length) { // Boundary check for columns
-                        throw new IndexOutOfBoundsException("Horizontal placement exceeds puzzle bounds");
-                    }
-                    newPuzzle[aux.getInitRow()][aux.getInitCol() + i] = repte.getItem(indexItem)[i];
-                } else if (aux.getDireccio() == 'V') { // Vertical placement
-                    if (aux.getInitRow() + i >= newPuzzle.length) { // Boundary check for rows
-                        throw new IndexOutOfBoundsException("Vertical placement exceeds puzzle bounds");
-                    }
-                    newPuzzle[aux.getInitRow() + i][aux.getInitCol()] = repte.getItem(indexItem)[i];
+            for (int i = 0; i < repte.getItem(indexItem).length; i++) { //tenemos que apuntar caracter a caracter en el array 2D puzzle en las posiciones correspondientes
+                if (aux.getDireccio() == 'h') {
+                    newPuzzle[aux.getInitCol() + i][aux.getInitRow()] = repte.getItem(indexItem)[i];
                 }
+                newPuzzle[aux.getInitCol()][aux.getInitRow() + i] = repte.getItem(indexItem)[i];
             }
             //eliminamos el item del array = tenemos que copiar este array en otro y añadirle todo el contenido que tiene excepto el que hemos anotado, podemos tambien añadir el indice de este en la lista de  indexMarcat, de esta forma, antes de añadir un resultado, tenemos que ver si el indice de este se encuentra o no en la lista, si se encuentra, no lo podemos anotar, si no se encuentra, lo anotamos.
             //de hecho, yo marcaría, por algo tenemos ese atributo...
@@ -163,12 +151,12 @@ public class SolucioBacktracking {
                 if (aux.getInitCol() == j && aux.getInitRow() == i) {
 
                     for (int k = 0; k < repte.getItem(indexItem).length; k++) {
-                        if (aux.getDireccio() == 'H') {
+                        if (aux.getDireccio() == 'h') {
                             if(newPuzzle[i][j + k] == itemToBeRemoved[k]) {
                                 newPuzzle[i][j + k] = ' ';
                             }
                         }
-                        else if(newPuzzle[i+k][j] == itemToBeRemoved[k]) {
+                        if(newPuzzle[i+k][j] == itemToBeRemoved[k]) {
                             newPuzzle[i + k][j] = ' ';
                         }
                     }
@@ -199,8 +187,7 @@ public class SolucioBacktracking {
 
     private void guardarMillorSolucio() {
         // TODO - cal guardar un clone
-        solucioMillor = solucioProvisional;
-        valorTotalParaules = calcularFuncioObjectiu(solucioProvisional.getPuzzle());
+
     }
 
     public String toString() {
